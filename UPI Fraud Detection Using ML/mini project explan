@@ -1,0 +1,61 @@
+# Project Report: UPI FraudGuard & Detection System
+
+## 1. Project Title
+**UPI FraudGuard: An Intelligent Real-Time Transaction Verification & Analytics System**
+
+## 2. Objective
+To build a machine learning-based security layer for UPI transactions that helps small business owners and shopkeepers identify fraudulent payments and "fake screenshot" scams in real-time.
+
+## 3. The Problem Statement
+In the current digital payment landscape, shopkeepers face two major types of UPI fraud:
+1.  **Technical Fraud**: Transactions that look real but are part of a larger pattern (rapid bursts, unusual hours, balance draining).
+2.  **Visual Fraud (Fake App Scams)**: Scammers use third-party applications to generate "fake" payment confirmation screens and show them to shopkeepers. Since the shopkeeper often doesn't check their bank statement immediately, they deliver goods for free.
+
+## 4. System Architecture
+The system is built on a modern **Full-Stack ML Architecture**:
+*   **Backend**: Flask (Python) for API handling and model inference.
+*   **Frontend**: Premium Dashboard built with HTML5, Vanilla CSS (Glassmorphism), and JavaScript (Chart.js for visualizations).
+*   **Machine Learning**: XGBoost Classifier trained on a custom synthetic dataset of 100,000 transactions.
+
+## 5. Technical Implementation Workflow
+
+### A. Data Generation & Feature Engineering
+We generated a realistic dataset with features like:
+*   `Amount`, `Sender/Receiver Balance`, `Transaction Type`.
+*   **Temporal Features**: Hour of day, Day of week (to catch late-night fraud).
+*   **Behavioral Features**: Amount-to-balance ratio, sudden balance changes.
+*   **Contextual Features**: City, UPI App used, Bank names.
+
+### B. Handling Class Imbalance (SMOTE)
+Fraud cases are naturally rare (only ~2.5% in our data). If trained directly, the model would simply guess "Not Fraud" every time. We used **SMOTE (Synthetic Minority Over-sampling Technique)** to create synthetic fraud cases during training, ensuring the model learns to identify fraud patterns accurately.
+
+### C. Model Selection (XGBoost)
+We compared three models:
+1.  **Logistic Regression**: Good baseline but lacks complexity.
+2.  **Random Forest**: Strong accuracy but high memory usage.
+3.  **XGBoost (Winner)**: Provided the best AUC-ROC score (99.9%+), handling non-linear relationships and high-dimensional data most efficiently.
+
+## 6. Key Features
+
+### 🛡️ Real-Time Payment Verification
+The "Verify Payment" tool is the core innovation for shopkeepers.
+*   **Transaction ID Lookup**: Instantly verifies if a transaction ID exists in the system and runs a fraud check on it.
+*   **UPI ID Search**: Allows a merchant to check the "trust score" of a customer by seeing their transaction history and fraud flags.
+*   **Anti-Fake Detection**: If a transaction ID isn't found, the system warns the shopkeeper: *"Potential Fake App Screenshot Detected!"*
+
+### 📊 Comprehensive Analytics
+*   **Fraud Distribution**: Visualizes the ratio of safe vs. fraudulent transactions.
+*   **Hourly Patterns**: Shows that fraud peaks at unusual hours (e.g., 2 AM - 4 AM).
+*   **Feature Importance**: Explains which factors (like large amount or low balance) contribute most to the fraud score.
+
+## 7. Metrics & Results
+*   **Accuracy**: ~99%
+*   **AUC-ROC**: 0.9996 (demonstrates near-perfect separation between fraud and legit cases).
+*   **Precision/Recall**: Balanced to minimize "False Alarms" while ensuring no fraud goes undetected.
+
+## 8. Conclusion & Future Scope
+The project successfully demonstrates how Machine Learning can protect small businesses from modern digital payment scams. 
+**Future Scope**:
+*   Integration with live Bank APIs (using sandboxes).
+*   Mobile Application for instant QR-code scan verification.
+*   SMS-based verification for shopkeepers without active internet.

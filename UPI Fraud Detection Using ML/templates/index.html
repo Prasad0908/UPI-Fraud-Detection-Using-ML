@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="UPI Fraud Detection System powered by Machine Learning — Real-time transaction analysis and fraud prediction dashboard.">
+    <title>UPI Fraud Detection — ML Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <!-- Background Effects -->
+    <div class="bg-grid"></div>
+    <div class="bg-glow bg-glow-1"></div>
+    <div class="bg-glow bg-glow-2"></div>
+
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-brand">
+            <span class="nav-icon">🛡️</span>
+            <span class="nav-title">UPI Fraud<span class="accent">Guard</span></span>
+        </div>
+        <div class="nav-links">
+            <a href="#overview" class="nav-link active">Overview</a>
+            <a href="#analysis" class="nav-link">Analysis</a>
+            <a href="#models" class="nav-link">Models</a>
+            <a href="#predict" class="nav-link">Predict</a>
+            <a href="#transactions" class="nav-link">Transactions</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="hero" id="overview">
+        <div class="hero-content">
+            <div class="hero-badge">Machine Learning Powered</div>
+            <h1 class="hero-title">
+                UPI Fraud <span class="gradient-text">Detection</span> System
+            </h1>
+            <p class="hero-subtitle">
+                Real-time transaction analysis using advanced ML models — Logistic Regression, Random Forest & XGBoost
+            </p>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="stats-grid">
+            <div class="stat-card" id="stat-total">
+                <div class="stat-icon">📊</div>
+                <div class="stat-value" data-target="0">0</div>
+                <div class="stat-label">Total Transactions</div>
+            </div>
+            <div class="stat-card fraud" id="stat-fraud">
+                <div class="stat-icon">🚨</div>
+                <div class="stat-value" data-target="0">0</div>
+                <div class="stat-label">Fraudulent</div>
+            </div>
+            <div class="stat-card safe" id="stat-legit">
+                <div class="stat-icon">✅</div>
+                <div class="stat-value" data-target="0">0</div>
+                <div class="stat-label">Legitimate</div>
+            </div>
+            <div class="stat-card accent" id="stat-accuracy">
+                <div class="stat-icon">🎯</div>
+                <div class="stat-value" data-target="0">0%</div>
+                <div class="stat-label">Best Model AUC</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Analysis Section -->
+    <section class="section" id="analysis">
+        <h2 class="section-title">Data <span class="gradient-text">Analysis</span></h2>
+        <p class="section-subtitle">Exploring patterns and distributions in UPI transaction data</p>
+
+        <div class="charts-grid">
+            <div class="chart-card">
+                <h3 class="chart-title">Transaction Distribution</h3>
+                <img src="/static/plots/fraud_distribution.png" alt="Fraud Distribution" class="chart-img" loading="lazy">
+            </div>
+            <div class="chart-card">
+                <h3 class="chart-title">Fraud by Hour of Day</h3>
+                <img src="/static/plots/fraud_by_hour.png" alt="Fraud by Hour" class="chart-img" loading="lazy">
+            </div>
+            <div class="chart-card wide">
+                <h3 class="chart-title">Transaction Amount Distribution</h3>
+                <img src="/static/plots/amount_distribution.png" alt="Amount Distribution" class="chart-img" loading="lazy">
+            </div>
+            <div class="chart-card">
+                <h3 class="chart-title">Fraud Rate by Transaction Type</h3>
+                <img src="/static/plots/fraud_by_type.png" alt="Fraud by Type" class="chart-img" loading="lazy">
+            </div>
+            <div class="chart-card">
+                <h3 class="chart-title">Top 15 Feature Importance</h3>
+                <img src="/static/plots/feature_importance.png" alt="Feature Importance" class="chart-img" loading="lazy">
+            </div>
+        </div>
+    </section>
+
+    <!-- Models Section -->
+    <section class="section" id="models">
+        <h2 class="section-title">Model <span class="gradient-text">Performance</span></h2>
+        <p class="section-subtitle">Comparing ML models trained for fraud detection</p>
+
+        <div class="model-cards" id="model-cards">
+            <!-- Filled by JS -->
+        </div>
+
+        <div class="charts-grid">
+            <div class="chart-card wide">
+                <h3 class="chart-title">Model Performance Comparison</h3>
+                <img src="/static/plots/model_comparison.png" alt="Model Comparison" class="chart-img" loading="lazy">
+            </div>
+            <div class="chart-card">
+                <h3 class="chart-title">ROC Curves</h3>
+                <img src="/static/plots/roc_curves.png" alt="ROC Curves" class="chart-img" loading="lazy">
+            </div>
+            <div class="chart-card">
+                <h3 class="chart-title">Confusion Matrices</h3>
+                <img src="/static/plots/confusion_matrices.png" alt="Confusion Matrices" class="chart-img" loading="lazy">
+            </div>
+        </div>
+    </section>
+
+    <!-- Prediction Section -->
+    <section class="section" id="predict">
+        <h2 class="section-title">Verify <span class="gradient-text">Payment</span></h2>
+        <p class="section-subtitle">Enter a Transaction ID or UPI ID to instantly verify if a payment is genuine or fraudulent</p>
+
+        <!-- Tab Switcher -->
+        <div class="tab-switcher">
+            <button class="tab-btn active" id="tab-lookup" onclick="switchTab('lookup')">
+                🔍 Verify Payment
+            </button>
+            <button class="tab-btn" id="tab-manual" onclick="switchTab('manual')">
+                ⚙️ Manual Analysis
+            </button>
+        </div>
+
+        <!-- ═══ TAB 1: Verify Payment (Lookup) ═══ -->
+        <div class="tab-content active" id="content-lookup">
+            <div class="lookup-container">
+                <div class="lookup-form-card">
+                    <div class="lookup-icon">🛡️</div>
+                    <h3 class="lookup-heading">Payment Verification</h3>
+                    <p class="lookup-desc">Shopkeepers & Merchants: Verify any UPI payment before delivering goods. Stop fake payment screenshots from third-party fraud apps.</p>
+
+                    <form id="lookup-form">
+                        <div class="search-type-toggle">
+                            <label class="toggle-option active" id="toggle-txn">
+                                <input type="radio" name="search_type" value="transaction_id" checked>
+                                <span>Transaction ID</span>
+                            </label>
+                            <label class="toggle-option" id="toggle-upi">
+                                <input type="radio" name="search_type" value="upi_id">
+                                <span>UPI ID</span>
+                            </label>
+                        </div>
+
+                        <div class="lookup-input-group">
+                            <input type="text" id="lookup-query" placeholder="Enter Transaction ID (e.g. UPI00000001)" autocomplete="off" required>
+                            <button type="submit" class="lookup-btn" id="lookup-btn">
+                                <span class="btn-text">Verify</span>
+                                <span class="btn-loader" style="display:none;">Checking...</span>
+                            </button>
+                        </div>
+
+                        <div class="lookup-examples">
+                            <span class="example-label">Try Legit:</span>
+                            <button type="button" class="example-chip chip-safe" onclick="fillExample('UPI00000001', 'transaction_id')">UPI00000001</button>
+                            <button type="button" class="example-chip chip-safe" onclick="fillExample('UPI00000003', 'transaction_id')">UPI00000003</button>
+                        </div>
+                        <div class="lookup-examples">
+                            <span class="example-label">Try Fraud:</span>
+                            <button type="button" class="example-chip chip-fraud" onclick="fillExample('UPI00000059', 'transaction_id')">UPI00000059</button>
+                            <button type="button" class="example-chip chip-fraud" onclick="fillExample('UPI00000079', 'transaction_id')">UPI00000079</button>
+                            <button type="button" class="example-chip chip-fraud" onclick="fillExample('UPI00000307', 'transaction_id')">UPI00000307</button>
+                        </div>
+                        <div class="lookup-examples">
+                            <span class="example-label">Try Fake:</span>
+                            <button type="button" class="example-chip chip-fake" onclick="fillExample('FAKE12345678', 'transaction_id')">FAKE12345678</button>
+                            <button type="button" class="example-chip chip-fake" onclick="fillExample('TXN999999999', 'transaction_id')">TXN999999999</button>
+                        </div>
+                        <div class="lookup-examples">
+                            <span class="example-label">Try UPI ID:</span>
+                            <button type="button" class="example-chip chip-upi" onclick="fillExample('nisha2579@okaxis', 'upi_id')">nisha2579@okaxis</button>
+                            <button type="button" class="example-chip chip-upi" onclick="fillExample('ritu6341@okaxis', 'upi_id')">ritu6341@okaxis</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Lookup Result -->
+                <div class="lookup-result" id="lookup-result" style="display:none;">
+                    <!-- Not Found -->
+                    <div class="lookup-not-found" id="lookup-not-found" style="display:none;">
+                        <div class="not-found-icon">❌</div>
+                        <h3>Transaction Not Found</h3>
+                        <p id="not-found-msg">No matching transaction found in the database.</p>
+                        <p class="not-found-warning">⚠️ This could indicate a fake payment! The customer may be using a fraudulent third-party app to show a fake payment confirmation.</p>
+                    </div>
+
+                    <!-- Found -->
+                    <div class="lookup-found" id="lookup-found" style="display:none;">
+                        <!-- Verdict Banner -->
+                        <div class="verdict-banner" id="verdict-banner">
+                            <div class="verdict-icon" id="verdict-icon">✅</div>
+                            <div class="verdict-text">
+                                <h3 id="verdict-title">Payment Verified</h3>
+                                <p id="verdict-subtitle">This transaction appears legitimate</p>
+                            </div>
+                            <div class="verdict-prob" id="verdict-prob">0%</div>
+                        </div>
+
+                        <!-- Transaction Details Card -->
+                        <div class="txn-details-card">
+                            <h4 class="details-heading">Transaction Details</h4>
+                            <div class="details-grid" id="txn-details-grid">
+                                <!-- Filled by JS -->
+                            </div>
+                        </div>
+
+                        <!-- UPI ID Summary (shown for UPI ID searches) -->
+                        <div class="upi-summary-card" id="upi-summary" style="display:none;">
+                            <h4 class="details-heading">UPI ID Fraud Summary</h4>
+                            <div class="summary-stats" id="upi-summary-stats">
+                                <!-- Filled by JS -->
+                            </div>
+                        </div>
+
+                        <!-- Transactions List (for UPI ID searches with multiple results) -->
+                        <div class="lookup-txn-list" id="lookup-txn-list" style="display:none;">
+                            <h4 class="details-heading">Transaction History</h4>
+                            <div class="lookup-table-wrap">
+                                <table class="data-table" id="lookup-table">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Date</th>
+                                            <th>Amount</th>
+                                            <th>Type</th>
+                                            <th>Sender UPI</th>
+                                            <th>Receiver UPI</th>
+                                            <th>ML Score</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="lookup-table-body"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══ TAB 2: Manual Analysis ═══ -->
+        <div class="tab-content" id="content-manual">
+            <div class="predict-container">
+                <form class="predict-form" id="predict-form">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="amount">Amount (₹)</label>
+                            <input type="number" id="amount" value="5000" min="1" step="100" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="sender_balance">Sender Balance (₹)</label>
+                            <input type="number" id="sender_balance" value="25000" min="0" step="100">
+                        </div>
+                        <div class="form-group">
+                            <label for="receiver_balance">Receiver Balance (₹)</label>
+                            <input type="number" id="receiver_balance" value="10000" min="0" step="100">
+                        </div>
+                        <div class="form-group">
+                            <label for="hour">Hour (0-23)</label>
+                            <input type="number" id="hour" value="14" min="0" max="23">
+                        </div>
+                        <div class="form-group">
+                            <label for="transaction_type">Transaction Type</label>
+                            <select id="transaction_type">
+                                <option value="P2P">P2P</option>
+                                <option value="P2M">P2M</option>
+                                <option value="Bill Payment">Bill Payment</option>
+                                <option value="Recharge">Recharge</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="device_type">Device</label>
+                            <select id="device_type">
+                                <option value="Android">Android</option>
+                                <option value="iOS">iOS</option>
+                                <option value="Web">Web</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="sender_bank">Sender Bank</label>
+                            <select id="sender_bank">
+                                <option value="SBI">SBI</option>
+                                <option value="HDFC">HDFC</option>
+                                <option value="ICICI">ICICI</option>
+                                <option value="Axis">Axis</option>
+                                <option value="Kotak">Kotak</option>
+                                <option value="PNB">PNB</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="receiver_bank">Receiver Bank</label>
+                            <select id="receiver_bank">
+                                <option value="HDFC">HDFC</option>
+                                <option value="SBI">SBI</option>
+                                <option value="ICICI">ICICI</option>
+                                <option value="Axis">Axis</option>
+                                <option value="Kotak">Kotak</option>
+                                <option value="PNB">PNB</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="sender_city">Sender City</label>
+                            <select id="sender_city">
+                                <option value="Mumbai">Mumbai</option>
+                                <option value="Delhi">Delhi</option>
+                                <option value="Bangalore">Bangalore</option>
+                                <option value="Hyderabad">Hyderabad</option>
+                                <option value="Chennai">Chennai</option>
+                                <option value="Kolkata">Kolkata</option>
+                                <option value="Pune">Pune</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="upi_app">UPI App</label>
+                            <select id="upi_app">
+                                <option value="GPay">GPay</option>
+                                <option value="PhonePe">PhonePe</option>
+                                <option value="Paytm">Paytm</option>
+                                <option value="BHIM">BHIM</option>
+                                <option value="Amazon Pay">Amazon Pay</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button type="submit" class="predict-btn" id="predict-btn">
+                        <span class="btn-text">🔍 Analyze Transaction</span>
+                        <span class="btn-loader" style="display:none;">⏳ Analyzing...</span>
+                    </button>
+                </form>
+
+                <!-- Result Panel -->
+                <div class="predict-result" id="predict-result" style="display:none;">
+                    <div class="result-gauge" id="result-gauge">
+                        <svg viewBox="0 0 200 120" class="gauge-svg">
+                            <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="#1e293b" stroke-width="16" stroke-linecap="round"/>
+                            <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="url(#gauge-gradient)" stroke-width="16" stroke-linecap="round"
+                                  id="gauge-fill" stroke-dasharray="251.2" stroke-dashoffset="251.2"/>
+                            <defs>
+                                <linearGradient id="gauge-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                    <stop offset="0%" style="stop-color:#10b981"/>
+                                    <stop offset="50%" style="stop-color:#f59e0b"/>
+                                    <stop offset="100%" style="stop-color:#f43f5e"/>
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                        <div class="gauge-value" id="gauge-value">0%</div>
+                        <div class="gauge-label">Fraud Probability</div>
+                    </div>
+                    <div class="result-details">
+                        <div class="result-badge" id="result-badge">—</div>
+                        <div class="result-risk" id="result-risk">Risk Level: —</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Transactions Table -->
+    <section class="section" id="transactions">
+        <h2 class="section-title">Recent <span class="gradient-text">Transactions</span></h2>
+        <p class="section-subtitle">Latest 50 transactions from the dataset</p>
+
+        <div class="table-container">
+            <table class="data-table" id="transactions-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Amount</th>
+                        <th>Type</th>
+                        <th>Sender Bank</th>
+                        <th>Device</th>
+                        <th>City</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="transactions-body">
+                    <tr><td colspan="7" style="text-align:center;color:#94a3b8;">Loading...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <p>🛡️ UPI FraudGuard — Machine Learning Fraud Detection System</p>
+            <p class="footer-sub">Built with Python, scikit-learn, XGBoost & Flask</p>
+        </div>
+    </footer>
+
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
